@@ -2,10 +2,17 @@ package item
 
 import "net/http"
 
-func GetAllItemsHandler(w http.ResponseWriter, r *http.Request){
+type Handler struct {
+}
+
+func NewHandler() *Handler {
+	return &Handler{}
+}
+
+func (c Handler) GetAllItemsHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetItemHandler(w http.ResponseWriter, r *http.Request){
+func (c Handler) GetItemHandler(w http.ResponseWriter, r *http.Request) {
 
 }

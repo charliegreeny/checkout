@@ -29,18 +29,18 @@ CREATE TABLE customers(
 CREATE TABLE carts (
     id VARCHAR(256) UNIQUE,
     customers_id VARCHAR(256),
-    cart_line_items_id VARCHAR(256),
+    total_price INTEGER,
     updated_at TIMESTAMP,
     created_at TIMESTAMP,
     is_complete BOOLEAN, 
     PRIMARY KEY (id, customers_id),
-    CONSTRAINT fk_cartCustomer FOREIGN KEY (customers_id) REFERENCES customers(id)
 );
 
 CREATE TABLE cart_line_items(
     cart_id VARCHAR(256),
     items_SKU VARCHAR(256),
     quantity INTEGER,
+    total_price INTEGER,
     PRIMARY KEY (cart_id, items_SKU, quantity),
     CONSTRAINT fk_cartLineItemItems FOREIGN KEY (items_SKU) REFERENCES items(SKU),
     CONSTRAINT fk_cartCartLineItem FOREIGN KEY (cart_id) REFERENCES carts(id)
