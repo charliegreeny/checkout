@@ -16,7 +16,7 @@ func Item() chi.Router{
 func Cart() chi.Router{
 	r := chi.NewRouter()
 	r.Post("/", cart.CreateCartHandler)
-	r.Post("/cart/{id}/item/{id}", cart.AddItemToCart)
+	r.Post("/cart/{cartId}/item/{itemId}", cart.AddItemToCart)
 	r.Get("/{id}", cart.GetCartHandler)
 	return r
 }

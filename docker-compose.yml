@@ -3,7 +3,34 @@ version: "3.9"
 
 services:
   checkout:
+    container_name: checkout-app
     build:
       dockerfile: Dockerfile
+    environment:
+      - DB_ADDRESS=checkout-db
+      - DB_USER=root
+      - DB_PASSWORD=password
     ports:
       - 8080:8080
+    depends_on:
+      - checkout_db
+    networks:
+      - checkout
+
+  checkout_db:
+    container_name: checkout-db
+    image: mysql:8.4.0
+    environment:
+      - MYSQL_DATABSE=checkout
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/datadump.sql
+    ports:
+      - 3306:3306
+    networks:
+      - checkout
+
+
+networks:
+  checkout:
+    external: true

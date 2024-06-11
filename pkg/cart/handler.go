@@ -10,6 +10,6 @@ func AddItemToCart(w http.ResponseWriter, r *http.Request){
 
 }
 
-func GetCartHandler (w http.ResponseWriter, r *http.Request){
+func GetCartHandler(w http.ResponseWriter, r *http.Request){
 
 }
