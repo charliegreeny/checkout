@@ -26,3 +26,4 @@ type LineItemEntity struct {
 func(LineItemEntity) TableName() string{
 	return "cart_line_items"
 }
+

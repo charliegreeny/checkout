@@ -17,6 +17,7 @@ func main() {
 			config.NewDb,
 			item.NewHandler,
 			cart.NewHandler,
+			cart.NewService,
 		),
 		fx.Invoke(api.StartRouter),
 		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {

@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/charliegreeny/checkout/pkg/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -39,11 +40,12 @@ func TestHandler_GetCartHandler(t *testing.T) {
 	}
 	tests := []struct {
 		name           string
+		matchFn		   func(id string)bool 
 		fields         fields
 		args           args
 		cartId         string
 		wantStatusCode int
-		wantBody	   *Entity
+		wantBody       *Entity
 	}{
 		{
 			name:   "cart is not valid, returns 404 status",
@@ -55,6 +57,15 @@ func TestHandler_GetCartHandler(t *testing.T) {
 			wantStatusCode: http.StatusNotFound,
 		},
 		{
+			name:   "generic error returned, returns 500 status",
+			fields: fields{service: &serviceMock{}},
+			args: args{
+				r: httptest.NewRequest("GET", "/cart/internalErr", nil),
+			},
+			cartId:         "internalErr",
+			wantStatusCode: http.StatusNotFound,
+		},
+		{
 			name:   "cart is valid, returns cart and 200 status code",
 			fields: fields{service: &serviceMock{}},
 			args: args{
@@ -62,7 +73,7 @@ func TestHandler_GetCartHandler(t *testing.T) {
 			},
 			cartId:         "cart1",
 			wantStatusCode: http.StatusOK,
-			wantBody: entity,
+			wantBody:       entity,
 		},
 	}
 	for _, tt := range tests {
@@ -71,11 +82,15 @@ func TestHandler_GetCartHandler(t *testing.T) {
 			m := &serviceMock{}
 			m.On("GetById", mock.MatchedBy(func(id string) bool {
 				return tt.cartId != entity.ID
-			})).Return(nil, errors.New("could not find cart")).Maybe()
+			})).Return(nil, model.NotFoundErr{Err: errors.New("not found")}).Maybe()
 
 			m.On("GetById", mock.MatchedBy(func(id string) bool {
 				return tt.cartId == entity.ID
 			})).Return(entity, nil).Maybe()
+			
+			m.On("GetById", mock.MatchedBy(func(id string) bool {
+				return id == "internalErr"
+			})).Return(nil, errors.New("Internal error")).Maybe()
 
 			h := Handler{m}
 
