@@ -11,10 +11,9 @@ func newMultiApplier(o *Entity) Applier {
 func (m multiApplier) Apply(quantityGot, price int) int {
 	total := 0
 	if quantityGot >= *m.offer.Quantity {
-		timesQual := *m.offer.Quantity / quantityGot
-
+		timesQual := quantityGot / *m.offer.Quantity
 		total = *m.offer.Price * timesQual
-		if remainder := *m.offer.Quantity % quantityGot; remainder > 0 {
+		if remainder := quantityGot % *m.offer.Quantity; remainder > 0 {
 			a := remainder * price
 			total += a
 			return total
