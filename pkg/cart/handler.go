@@ -47,5 +47,5 @@ func (h Handler) GetCartHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("internal server error: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(e)
+	json.NewEncoder(w).Encode(e.ToOutput())
 }
