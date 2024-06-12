@@ -1,5 +1,3 @@
-#!/bin/bash
-
 CREATE DATABASE checkout;
 
 USE checkout; 
@@ -20,20 +18,19 @@ CREATE TABLE items(
     CONSTRAINT fk_itemOffer FOREIGN KEY (offers_id) REFERENCES offers(id)
 );
 
-
 CREATE TABLE customers(
     id VARCHAR(256), 
     PRIMARY KEY (id)
 );
 
-CREATE TABLE carts (
+CREATE TABLE carts(
     id VARCHAR(256) UNIQUE,
     customers_id VARCHAR(256),
     total_price INTEGER,
     updated_at TIMESTAMP,
     created_at TIMESTAMP,
     is_complete BOOLEAN, 
-    PRIMARY KEY (id, customers_id),
+    PRIMARY KEY (id, customers_id)
 );
 
 CREATE TABLE cart_line_items(
@@ -46,7 +43,7 @@ CREATE TABLE cart_line_items(
     CONSTRAINT fk_cartCartLineItem FOREIGN KEY (cart_id) REFERENCES carts(id)
 );
 
-INSERT INTO offers(id, price, quantity) VALUES('123', 130, 5);
+INSERT INTO offers(id, price, quantity) VALUES('123', 130, 3);
 INSERT INTO offers(id, price, quantity) VALUES('456', 2, 45);
 
 INSERT INTO items VALUES('A', 50, '123'); 

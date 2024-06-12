@@ -11,24 +11,34 @@ import (
 )
 
 type Handler struct {
-	service model.IDGetter[*Entity]
+	service model.IDGetterCreator[*createInput,*Entity]
 }
 
-func NewHandler(s model.IDGetter[*Entity]) *Handler {
+func NewHandler(s model.IDGetterCreator[*createInput,*Entity]) *Handler {
 	return &Handler{s}
 }
 
-func (c Handler) CreateCartHandler(w http.ResponseWriter, r *http.Request) {
-
+func (h Handler) CreateCartHandler(w http.ResponseWriter, r *http.Request) {
+	var reqBody *createInput 
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+	e, err := h.service.Create(reqBody)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("internal server error: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(e.ToOutput())
 }
 
-func (c Handler) AddItemToCart(w http.ResponseWriter, r *http.Request) {
-
+func (h Handler) AddItemToCart(w http.ResponseWriter, r *http.Request) {
+	
 }
 
-func (c Handler) GetCartHandler(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetCartHandler(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	e, err := c.service.GetById(id)
+	e, err := h.service.GetById(id)
 	if errors.As(err, &model.ErrNotFound{}) {
 		http.Error(w, fmt.Sprintf("cart id %s not found", id), http.StatusNotFound)
 		return

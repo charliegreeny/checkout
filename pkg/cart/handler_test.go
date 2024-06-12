@@ -20,7 +20,7 @@ var entity = &Entity{
 	ID:          "cart1",
 	CustomersID: "customer1",
 	TotalPrice:  100,
-	IsCompleted: false,
+	IsComplete:  false,
 }
 
 func (m *serviceMock) GetById(id string) (*Entity, error) {
@@ -29,6 +29,10 @@ func (m *serviceMock) GetById(id string) (*Entity, error) {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*Entity), args.Error(1)
+}
+
+func (m *serviceMock) Create(input *createInput) (*Entity, error) {
+	return nil, nil
 }
 
 func TestHandler_GetCartHandler(t *testing.T) {
