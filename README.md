@@ -17,6 +17,13 @@ Checkout System Task
 - App will be running on `http://localhost:8080`
 
 
+### Gotchas 
+- Restart app if does not connect to DB 
+    - Due to the spinning up of the app needing to connect to database error, occasionally will error out due to database image starting but not ready for connects 
+    - **FIX:** 
+        - wait ~1 minute for database to fully spin up and run `make up` again,
+        - This will only spin up the app image and connect to the DB properly
+
 #### Endpoints 
 
 ##### POST /cart
