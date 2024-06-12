@@ -44,7 +44,7 @@ CREATE TABLE cart_line_items(
 );
 
 INSERT INTO offers(id, price, quantity) VALUES('123', 130, 3);
-INSERT INTO offers(id, price, quantity) VALUES('456', 2, 45);
+INSERT INTO offers(id, price, quantity) VALUES('456', 45, 2);
 
 INSERT INTO items VALUES('A', 50, '123'); 
 INSERT INTO items VALUES('B', 30, '456'); 

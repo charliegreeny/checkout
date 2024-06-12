@@ -32,6 +32,7 @@ func (e Entity) ToOutput() *output {
 		UpdatedAt:   e.UpdatedAt,
 		CreatedAt:   e.CreatedAt,
 		IsCompleted: e.IsComplete,
+		TotalPrice:  e.TotalPrice,
 	}
 }
 
