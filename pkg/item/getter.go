@@ -40,7 +40,9 @@ func (g getter) GetById(id string) (*Entity, error) {
 
 func (g getter) AddToCache() error {
 	var items []*Entity
-	g.db.Find(&items)
+	if r := g.db.Find(&items); r.Error != nil {
+		return r.Error
+	}
 	for _, i := range items {
 		if i.OffersId != nil {
 			o, err := g.offerGetter.GetById(*i.OffersId)
