@@ -16,6 +16,7 @@ func Test_service_GetById(t *testing.T) {
 		id       string
 		want     *Entity
 		stubRows *sqlmock.Rows
+		stubErr  error
 		wantErr  error
 	}{
 		{
@@ -24,19 +25,22 @@ func Test_service_GetById(t *testing.T) {
 			stubRows: sqlmock.NewRows([]string{"id", "total_price", "is_complete"}).AddRow("cart1", 100, true),
 			want:     &Entity{ID: "cart1", TotalPrice: 100, IsComplete: true},
 			wantErr:  nil,
+			stubErr: nil,
 		},
 		{
 			name:     "Invalid id, entity nil, ErrNotFound returned",
 			id:       "cart1",
 			stubRows: sqlmock.NewRows([]string{"id", "total_price", "is_complete"}),
 			want:     nil,
-			wantErr:  &model.ErrNotFound{},
+			stubErr:  gorm.ErrRecordNotFound,
+			wantErr:  model.ErrNotFound{Err:gorm.ErrRecordNotFound},
 		},
 		{
 			name:     "Random db error, nil entity, random db error return",
 			id:       "cart1",
 			stubRows: sqlmock.NewRows([]string{"id", "total_price", "is_complete"}),
 			want:     nil,
+			stubErr:  gorm.ErrInvalidData,
 			wantErr:  gorm.ErrInvalidData,
 		},
 	}
@@ -63,8 +67,8 @@ func Test_service_GetById(t *testing.T) {
 			m := mock.ExpectQuery("SELECT (.+) FROM `carts` WHERE id =(.+)").
 				WithArgs(tt.id, 1).WillReturnRows(tt.stubRows)
 
-			if tt.wantErr != nil {
-				m.WillReturnError(tt.wantErr)
+			if tt.stubErr != nil {
+				m.WillReturnError(tt.stubErr)
 			}
 
 			got, err := s.GetById(tt.id)
