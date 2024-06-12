@@ -29,6 +29,7 @@ func (h Handler) CreateCartHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("internal server error: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(e.ToOutput())
 }
 
@@ -47,5 +48,6 @@ func (h Handler) GetCartHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("internal server error: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(e.ToOutput())
 }
