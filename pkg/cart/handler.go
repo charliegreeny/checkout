@@ -26,6 +26,10 @@ func (h Handler) CreateCartHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	e, err := h.service.Create(reqBody)
 	if err != nil {
+		if errors.As(err, &model.ErrNotFound{}){
+			http.Error(w, fmt.Sprintf("entity not found: %s", err.Error()), http.StatusNotFound)
+			return
+		}
 		http.Error(w, fmt.Sprintf("internal server error: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}

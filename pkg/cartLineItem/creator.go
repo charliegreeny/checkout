@@ -30,9 +30,9 @@ func (c creator) Create(input *Item) (*Entity, error){
 		}
 		totalPrice = a.Apply(input.Quantity, item.Price)
 	}
-	// if totalPrice == 0 {
-	// 	totalPrice = input.Quantity * item.Price
-	// }
+	if totalPrice == 0 {
+		totalPrice = input.Quantity * item.Price
+	}
 	return &Entity{
 		ItemsSKU: item.SKU,
 		CartID: input.CartId,

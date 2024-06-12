@@ -48,8 +48,8 @@ func (g getter) AddToCache() error {
 				return err
 			}
 			i.Offer = o 
-			g.cache[i.SKU] = i
 		}
+		g.cache[i.SKU] = i
 	}
 	return nil
 }
