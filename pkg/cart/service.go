@@ -7,21 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type service struct{
+type service struct {
 	db *gorm.DB
 }
 
-func NewService(db *gorm.DB) model.Service[*Entity]{
+func NewService(db *gorm.DB) model.IDGetter[*Entity] {
 	return &service{db}
 }
 
-func(s service) GetById(id string) (*Entity, error){
+func (s service) GetById(id string) (*Entity, error) {
 	var e *Entity
-  	result := s.db.First(&e, "id = ?", id)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound){
-		return nil, model.NotFoundErr{Err: result.Error}
-	}
+	result := s.db.First(&e, "id = ?", id)
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, model.ErrNotFound{Err: result.Error}
+		}
 		return nil, result.Error
 	}
 	return e, nil

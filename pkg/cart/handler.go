@@ -11,10 +11,10 @@ import (
 )
 
 type Handler struct {
-	service model.Service[*Entity]
+	service model.IDGetter[*Entity]
 }
 
-func NewHandler(s model.Service[*Entity]) *Handler {
+func NewHandler(s model.IDGetter[*Entity]) *Handler {
 	return &Handler{s}
 }
 
@@ -29,7 +29,7 @@ func (c Handler) AddItemToCart(w http.ResponseWriter, r *http.Request) {
 func (c Handler) GetCartHandler(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	e, err := c.service.GetById(id)
-	if errors.As(err, &model.NotFoundErr{}) {
+	if errors.As(err, &model.ErrNotFound{}) {
 		http.Error(w, fmt.Sprintf("cart id %s not found", id), http.StatusNotFound)
 		return
 	}

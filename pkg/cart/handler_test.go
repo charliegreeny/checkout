@@ -40,7 +40,7 @@ func TestHandler_GetCartHandler(t *testing.T) {
 	}
 	tests := []struct {
 		name           string
-		matchFn		   func(id string)bool 
+		matchFn        func(id string) bool
 		fields         fields
 		args           args
 		cartId         string
@@ -82,12 +82,12 @@ func TestHandler_GetCartHandler(t *testing.T) {
 			m := &serviceMock{}
 			m.On("GetById", mock.MatchedBy(func(id string) bool {
 				return tt.cartId != entity.ID
-			})).Return(nil, model.NotFoundErr{Err: errors.New("not found")}).Maybe()
+			})).Return(nil, model.ErrNotFound{Err: errors.New("not found")}).Maybe()
 
 			m.On("GetById", mock.MatchedBy(func(id string) bool {
 				return tt.cartId == entity.ID
 			})).Return(entity, nil).Maybe()
-			
+
 			m.On("GetById", mock.MatchedBy(func(id string) bool {
 				return id == "internalErr"
 			})).Return(nil, errors.New("Internal error")).Maybe()

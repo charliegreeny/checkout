@@ -1,9 +1,9 @@
 package model
 
-type NotFoundErr struct {
+type ErrNotFound struct {
 	Err error
 }
 
-func (n NotFoundErr) Error() string {
+func (n ErrNotFound) Error() string {
 	return n.Err.Error()
 }
