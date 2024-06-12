@@ -29,9 +29,9 @@ func (g getter) GetById(id string) (*Entity, error) {
 	return e, nil
 }
 
-func GetApplier(e *Entity) Applier {
+func GetApplier(e *Entity) (Applier, error) {
 	if e.Quantity != nil && e.Price != nil {
-		return newMultiApplier(e)
+		return newMultiApplier(e), nil
 	}
-	return nil
+	return nil, errors.New("no offer to apply")
 }
