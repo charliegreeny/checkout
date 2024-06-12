@@ -9,7 +9,7 @@ type Entity struct {
 	TotalPrice 		int  	  `gorm:"column:total_price"`
 	UpdatedAt       time.Time `gorm:"column:updated_at" json:"updated_at"`
 	CreatedAt       time.Time `gorm:"column:created_at" json:"created_at"`
-	IsCompleted 	bool 	   
+	IsCompleted 	bool 	  `gorm:"column:is_completed" json:"is_completed"`
 }
 
 func (Entity) TableName() string {

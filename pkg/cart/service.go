@@ -10,10 +10,6 @@ func NewService(db *gorm.DB) *service{
 	return &service{db}
 }
 
-func(s service) GetAll() []*Entity{
-	return []*Entity{}
-}
-
 func(s service) GetById() *Entity{
   	return &Entity{}
 }

@@ -1,11 +1,10 @@
 package cart
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"slices"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,30 +15,11 @@ type serviceMock struct {
 	mock.Mock
 }
 
-var entities = []*Entity{&Entity{
+var entity = &Entity{
 	ID:          "cart1",
 	CustomersID: "customer1",
 	TotalPrice:  100,
 	IsCompleted: false,
-},
-	&Entity{
-		ID:          "cart2",
-		CustomersID: "customer2",
-		TotalPrice:  100,
-		IsCompleted: false,
-	},
-}
-
-var entity2 = &Entity{
-	ID:          "cart2",
-	CustomersID: "customer2",
-	TotalPrice:  100,
-	IsCompleted: false,
-}
-
-func (m *serviceMock) GetAll() []*Entity {
-	args := m.Called()
-	return args.Get(0).([]*Entity)
 }
 
 func (m *serviceMock) GetById(id string) (*Entity, error) {
@@ -50,7 +30,7 @@ func (m *serviceMock) GetById(id string) (*Entity, error) {
 	return args.Get(0).(*Entity), args.Error(1)
 }
 
-func TestHandler_CreateCartHandler(t *testing.T) {
+func TestHandler_GetCartHandler(t *testing.T) {
 	type fields struct {
 		service *serviceMock
 	}
@@ -63,15 +43,26 @@ func TestHandler_CreateCartHandler(t *testing.T) {
 		args           args
 		cartId         string
 		wantStatusCode int
+		wantBody	   *Entity
 	}{
 		{
-			name:   "cart is not found, returns 404",
+			name:   "cart is not valid, returns 404 status",
 			fields: fields{service: &serviceMock{}},
 			args: args{
-				r: httptest.NewRequest("GET", "/cart/notValid", strings.NewReader(`{}`)),
+				r: httptest.NewRequest("GET", "/cart/notValid", nil),
 			},
 			cartId:         "notValid",
 			wantStatusCode: http.StatusNotFound,
+		},
+		{
+			name:   "cart is valid, returns cart and 200 status code",
+			fields: fields{service: &serviceMock{}},
+			args: args{
+				r: httptest.NewRequest("GET", "/cart/cart1", nil),
+			},
+			cartId:         "cart1",
+			wantStatusCode: http.StatusOK,
+			wantBody: entity,
 		},
 	}
 	for _, tt := range tests {
@@ -79,10 +70,12 @@ func TestHandler_CreateCartHandler(t *testing.T) {
 
 			m := &serviceMock{}
 			m.On("GetById", mock.MatchedBy(func(id string) bool {
-				return !slices.ContainsFunc(entities, func(e *Entity) bool {
-					return e.ID == tt.cartId
-				})
+				return tt.cartId != entity.ID
 			})).Return(nil, errors.New("could not find cart")).Maybe()
+
+			m.On("GetById", mock.MatchedBy(func(id string) bool {
+				return tt.cartId == entity.ID
+			})).Return(entity, nil).Maybe()
 
 			h := Handler{m}
 
@@ -92,6 +85,12 @@ func TestHandler_CreateCartHandler(t *testing.T) {
 
 			if !assert.Equalf(t, tt.wantStatusCode, rr.Code, "status code not as expected") {
 				return
+			}
+
+			if tt.wantStatusCode == http.StatusOK {
+				var gotBody *Entity
+				json.NewDecoder(rr.Body).Decode(&gotBody)
+				assert.Equalf(t, tt.wantBody, gotBody, "return body not as expected")
 			}
 		})
 	}
