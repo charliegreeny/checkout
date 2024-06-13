@@ -10,11 +10,10 @@ import (
 type creator struct{
 	db *gorm.DB
 	itemGetter model.IDGetter[*item.Entity]
-	offerGetter model.IDGetter[*offer.Entity]
 }
 
-func NewCreator(db *gorm.DB, ig model.IDGetter[*item.Entity], og model.IDGetter[*offer.Entity]) model.Creator[*Item, *Entity] {
-	return &creator{db: db, itemGetter: ig, offerGetter: og}
+func NewCreator(db *gorm.DB, ig model.IDGetter[*item.Entity]) model.Creator[*Item, *Entity] {
+	return &creator{db: db, itemGetter: ig}
 }
 
 func (c creator) Create(input *Item) (*Entity, error){
@@ -33,10 +32,14 @@ func (c creator) Create(input *Item) (*Entity, error){
 	if totalPrice == 0 {
 		totalPrice = input.Quantity * item.Price
 	}
-	return &Entity{
+	e := &Entity{
 		ItemsSKU: item.SKU,
 		CartID: input.CartId,
 		Quantity: input.Quantity,
 		TotalPrice: totalPrice,
-	}, nil
+	}
+	if r := c.db.Create(e); r.Error != nil {
+		return nil, r.Error
+	}
+	return e, nil
 }

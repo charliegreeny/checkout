@@ -32,18 +32,22 @@ Checkout System Task
 - curl: 
     ``` 
     curl --location 'http://localhost:8080/cart/' \
-    --header 'Content-Type: application/json' \
-    --data '{
-        "customerId": "dffc100d-787b-4ca4-8d29-bf783c855535",
-        "lineItems": [
-        { 
-            "itemSKU": "A",
-            "quantity": 5
-        },
-        { 
-            "itemSKU": "B",
-            "quantity":  3
-        }]}'
+        --header 'Content-Type: application/json' \
+        --data '{
+            "customerId": "customer_1",
+            "lineItems": [{
+                "itemSKU": "A",
+                "quantity": 1
+                },
+                {
+                "itemSKU": "B",
+                "quantity": 3
+                },
+                {
+                "itemSKU": "C",
+                "quantity": 3
+                }]
+             }'
     ```
 
 ##### Get /cart/{id} (WIP)

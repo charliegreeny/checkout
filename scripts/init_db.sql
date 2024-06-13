@@ -30,7 +30,8 @@ CREATE TABLE carts(
     updated_at TIMESTAMP,
     created_at TIMESTAMP,
     is_complete BOOLEAN, 
-    PRIMARY KEY (id, customers_id)
+    PRIMARY KEY (id, customers_id),
+    CONSTRAINT fk_cartCustomer FOREIGN KEY (customers_id) REFERENCES customers(id)
 );
 
 CREATE TABLE cart_line_items(
