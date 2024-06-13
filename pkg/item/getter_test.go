@@ -78,12 +78,6 @@ func Test_getter_GetById(t *testing.T) {
 }
 
 func Test_getter_AddToCache(t *testing.T) {
-	type fields struct {
-		cache       map[string]*Entity
-		offerGetter model.IDGetter[*offer.Entity]
-		db          *gorm.DB
-		log         *zap.Logger
-	}
 	tests := []struct {
 		name         string
 		offerGetter  mockOfferGetter

@@ -5,18 +5,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type service struct {
+type creator struct {
 	db *gorm.DB
 }
 
 func NewCustomerCreator(db *gorm.DB) model.Creator[string, *Entity] {
-	return &service{db}
+	return &creator{db}
 }
 
-func (s service) Create(id string) (*Entity, error) {
+func (c creator) Create(id string) (*Entity, error) {
 	e := &Entity{id}
 
-	r := s.db.Create(e)
+	r := c.db.Create(e)
 	if r.Error != nil {
 		return nil, r.Error
 	}

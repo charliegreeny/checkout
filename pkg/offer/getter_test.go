@@ -82,7 +82,7 @@ func Test_getter_GetById(t *testing.T) {
 			wantErr:  model.ErrNotFound{Err:gorm.ErrRecordNotFound},
 		},
 		{
-			name:     "Random db error, nil entity, random db error retur",
+			name:     "Random db error, nil entity, random db error return",
 			id:       "offer1",
 			want:     nil,
 			stubRows: sqlmock.NewRows([]string{"id", "price", "quantity"}),
@@ -116,7 +116,7 @@ func Test_getter_GetById(t *testing.T) {
 			if tt.stubErr != nil {
 				m.WillReturnError(tt.stubErr)
 			}
-
+			mock.ExpectationsWereMet()	
 			got, err := s.GetById(tt.id)
 
 			if err != nil {
